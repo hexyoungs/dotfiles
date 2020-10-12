@@ -4,7 +4,7 @@ export XMODIFIERS=@im=SCIM
 export GTK_IM_MODULE=scim
 export QT_IM_MODULE=scim
 export EDITOR="nvim"
-export TERMIAL="sakura"
+export TERM="sakura"
 export BROWSER="firefox"
 
 setxkbmap -option ctrl:nocaps &
