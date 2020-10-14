@@ -2,3 +2,6 @@
 !.gitignore
 !sakura/
 !nvim/
+!i3
+!polybar
+!scripts

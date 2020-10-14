@@ -1,8 +1,8 @@
 export LANG=en_US.UTF-8
 export LC_CTYPE=zh_CN.UTF-8
-export XMODIFIERS=@im=SCIM
-export GTK_IM_MODULE=scim
-export QT_IM_MODULE=scim
+export XMODIFIERS=@im=fcitx
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
 export EDITOR="nvim"
 export TERMINAL="st"
 export BROWSER="firefox"
@@ -11,5 +11,5 @@ setxkbmap -option ctrl:nocaps &
 xmodmap -e "keycode 37=" &
 xset r rate 300 50 &
 
-scim -d
-exec spectrwm
+fcitx-autostart
+exec i3
