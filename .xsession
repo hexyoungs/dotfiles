@@ -12,8 +12,11 @@ xmodmap -e "keycode 37=" &
 xset r rate 300 50 &
 
 fcitx-autostart &
+
 ~/.config/scripts/pegas_autostart &
 ~/.config/scripts/bg_autostart &
+
+kill "$(pgrep -f bar.sh)"
 ~/.config/scripts/bar.sh &
 
 exec dwm

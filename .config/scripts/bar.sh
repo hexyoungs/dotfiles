@@ -31,7 +31,7 @@ EOF
 mem_fix=$(cat <<EOF
 {
 	split(\$3, real, "/")
-	print "Mem: U: " real[2] " F: " \$6 " C: " \$8
+  print "Mem(F): " \$6
 }
 EOF
 )
