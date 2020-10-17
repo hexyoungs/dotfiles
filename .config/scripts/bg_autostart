@@ -1,0 +1,3 @@
+#/bin/sh
+
+feh --bg-fill ~/Documents/onedrive/wallpaper.jpg

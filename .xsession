@@ -11,6 +11,9 @@ setxkbmap -option ctrl:nocaps &
 xmodmap -e "keycode 37=" &
 xset r rate 300 50 &
 
-fcitx-autostart
-#exec /home/hexyoungs/.config/scripts/start_dwm.sh
+fcitx-autostart &
+~/.config/scripts/pegas_autostart &
+~/.config/scripts/bg_autostart &
+~/.config/scripts/bar.sh &
+
 exec dwm

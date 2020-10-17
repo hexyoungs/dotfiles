@@ -84,7 +84,7 @@ mem() {
 temp() {
 	local TMP
 	# Average all the sensors
-	TMP=$(sysctl hw.sensors | grep temp | \
+	TMP=$(sysctl hw.sensors | grep cpu | \
 		awk -F= '{print $2}' | \
 		awk "${temp_avg}")
 	if [ $TMP -ge 85 ]; then
@@ -173,7 +173,8 @@ function Battery {
 }
 
 function Clock {
-	local DATETIME=$(date "+%a %F %H:%M %Z")
+	# local DATETIME=$(date "+%a %F %H:%M %Z")
+  local DATETIME=$(date +'%a %d %b %H:%M')
 	print -n "${COLOROFF}${DATETIME}"
 }
 
@@ -197,10 +198,9 @@ function Volume {
 	print -n "${SPK}${COLOROFF}"
 }
 
-
 while true ; do
-  printf "%s | %s | %s | CPU: %s | %s %s | WIFI: %s | %s | %s" \
+  printf "  %s  |  %s  |  %s  |  CPU: %s  |  %s %s  |  WIFI: %s  |  %s\n" \
   "$(Battery)" "$(Display)" "$(Volume)" "$(temp)" "$(mem)" \
-  "$(vmm)" "$(wifi)" "$(Clock)"
+  "$(vmm)" "$(wifi)" "$(Clock)" | dwm-status
   sleep 5
 done
