@@ -19,4 +19,5 @@ fcitx-autostart &
 kill "$(pgrep -f bar.sh)"
 ~/.config/scripts/bar.sh &
 
+xrdb ~/.Xresources
 exec dwm
