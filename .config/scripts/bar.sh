@@ -56,20 +56,24 @@ print_hddfree() {
 }
 
  print_volume(){
-    mix=`amixer get Master | tail -1`
-    vol="$(amixer get Master | tail -n1 | sed -r 's/.*\[(.*)%\].*/\1/')"
-    if [[ $mix == *\[off\]* ]]; then
+    muted="$(pamixer --get-mute)"
+    vol="$(pamixer --get-volume)"
+    if [[ $muted == true ]]; then
       #red 2                                                
       echo -e "${color6}í${color2} OFF"
-    elif [[ $mix == *\[on\]* ]]; then
+    elif [[ $muted == false ]]; then
       #green 9
-      echo -e "${color6}  SND  ${color0}${vol}% "
+      echo -e "${color6}  SND  ${color0}${vol} "
     else
       #yellow6
-      echo -e "${color6}  SND  ${color2} ---"
+      echo -e "${color6}  SND  ${color2} ${muted}"
     fi
  }
 
+print_light() {
+  light="$(light -G)"
+  echo -e " LIGHT ${light} "
+}
 
 print_datetime() {
   datetime="$(date "+%a %d %b %I:%M")"
@@ -104,7 +108,7 @@ print_cpu_used() {
  
   # Pipe to status bar, not indented due to printing extra spaces/tabs
   #xsetroot -name "$(print_power)${sp1}$(print_wifiqual)$(print_hddfree)${sp1}$(print_email_count)$(print_pacup)$(print_aurups)$(print_aurphans)${sp2}$(print_volume)${sp2}$(print_datetime)"
-  echo "$(print_cpu_used) |  $(print_cputemp)  |  $(print_mem)  |  $(print_hddfree)  | $(print_volume)  | $(print_power)  |  $(print_wifiqual)  $(print_datetime)" | dwm-status
+  echo "$(print_cpu_used) |  $(print_cputemp)  |  $(print_mem)  |  $(print_hddfree)  |  $(print_light)  |  $(print_volume)  | $(print_power)  |  $(print_wifiqual)  $(print_datetime)" | dwm-status
   #xsetroot -name "$(print_song_info)$(print_power)${sp1}$(print_wifiqual)$(print_hddfree)${sp2}$(print_volume)${sp2}$(print_datetime)"
 
   # reset old rates
