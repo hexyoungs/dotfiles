@@ -1,0 +1,18 @@
+#!/bin/sh
+export GTK_IM_MODULE=fcitx5
+export QT_IM_MODULE=fcitx5
+export XMODIFIERS=@im=fcitx5
+export EDITOR="nvim"
+export TERMINAL="st"
+export BROWSER="firefox"
+export PATH="$PATH:$HOME/.local/bin"
+export TERM="xterm-256color"
+
+setxkbmap -option ctrl:nocaps &
+xmodmap -e "keycode 37=" &
+xset r rate 300 50 &
+
+/usr/bin/start-pulseaudio-x11
+/home/hexyoungs/.config/scripts/pegas_autostart &
+/home/hexyoungs/.config/scripts/bg_autostart &
+
