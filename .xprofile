@@ -13,6 +13,12 @@ xmodmap -e "keycode 37=" &
 xset r rate 300 50 &
 
 /usr/bin/start-pulseaudio-x11
-/home/hexyoungs/.config/scripts/pegas_autostart &
+/home/hexyoungs/.config/scripts/pegas_autostart > /dev/null 2<&1 &
 /home/hexyoungs/.config/scripts/bg_autostart &
+kill $(pgrep -f bar)
+/home/hexyoungs/.config/scripts/bar.sh > /dev/null 2<&1 &
+
+xset +fp /home/hexyoungs/.fonts
+xset fp rehash
+
 

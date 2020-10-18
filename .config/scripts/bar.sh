@@ -1,206 +1,115 @@
-#!/bin/ksh
+#!/bin/bash
 
-red="%{F#cd0000}"
-yellow="%{F#cdcd00}"
-black="%{F#000000}"
+# ~/bin/dwm-statusbar
+# Adapted from w0ng status bar: https://github.com/w0ng/bin
+# Adapted from jasonwryan status bar: https://bitbucket.org/jasonwryan/shiv/src/1ad5950c3108a4e5a9dcb78888a1ccfeb9252b45/Scripts/dwm-status?at=default
 
-wifi_ssid=$(cat <<EOF
-\$1 ~ "ieee80211" {
-	split(\$0, chars, "");
-	match(\$0, /join .* chan/);
-	ssid = substr(\$0, RSTART + 5, RLENGTH - 10)
-	gsub(/\"/, "", ssid)
-	print ssid
-}
-EOF
-)
-wifi_sig=$(cat <<EOF
-\$1 ~ "ieee80211" {
-	split(\$0, chars, "");
-	match(\$0, /[0-9]+%/);
-	val=substr(\$0, RSTART, RLENGTH)
-	if (val == "") {
-		printf \$(NF - 9)
-	} else {
-		printf "%3d%%", val
-	}
-}
-EOF
-)
+# Colour codes from dwm/config.h
+#color0="\x01" # normal  
+#color6="\x02" # green 
+#color7="\x03" # blue 
+#color1="\x01" # white-ish fg
 
-mem_fix=$(cat <<EOF
-{
-	split(\$3, real, "/")
-  print "Mem(F): " \$6
-}
-EOF
-)
+color0="" # normal  
+color6="" # green 
+color7="" # blue 
+color1="" # white-ish fg
 
-temp_avg=$(cat <<EOF
-BEGIN {
-	count=0
-	sum=0
-}
-{
-	count++
-	sum += \$1
-}
-END {
-	b = sum / count
-	printf("%d",b+=b<0?0:0.9)
-}
-EOF
-)
 
-# TODO check lengte and make sure we aren't wayy off base
-wifi() {
-	local w sig ssid
-	w=$(ifconfig wlan | grep "ieee80211")
-	ssid="$(echo "$w" | awk "${wifi_ssid}")"
-	sig="$(echo "$w" | awk "${wifi_sig}")"
-  printf "%s(%s)" "${ssid}" "${sig}"
+
+
+#---separator                              
+sp="$(echo -ne "${color0} ")" 
+sp1="$(echo -ne "${color0} | ")" 
+sp2="$(echo -ne "${color0}| ")"
+sp3="$(echo -ne "${color0}|")"
+
+print_song_info() {
+  track="$(mpc current)"
+  artist="${track%%- *}"
+  title="${track##*- }"
+  [[ -n "$artist" ]] && echo -e "${color6}ê${color0}${artist}${color7}${title} ${color0}|"
 }
 
-beat() {
-	local b
-	b=$(echo "(($(date +'%s')+3600)%86400)/86.4" | bc)
-	printf "%03d" "${b}"
+print_power() {
+  status="$(cat /sys/class/power_supply/AC/online)"
+  battery="$(cat /sys/class/power_supply/BAT0/capacity)"
+  # timer="$(acpi -b | grep "Battery" | awk '{print $5}' | cut -c 1-5)"
+  timer="$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep hours | awk '{print $4}')"
+  if [ "${status}" == 1 ]; then
+    echo -ne "${color6}  PWR  ${color0}ON ${battery}%    "
+  else
+    echo -ne "${color6}  PWR  ${color0}${battery}%(${timer})   "
+  fi
 }
 
-hz() {
-	local hz
-	hz=$(apm -Pv | \
-		awk \
-		'{gsub(/\(/, "", $5); gsub(/\)/, "", $6); print $5 " " $6 " " $4}')
-	printf "%s" "$hz"
+print_wifiqual() {
+  wifiessid="$(/sbin/iwconfig 2>/dev/null | grep ESSID | cut -d: -f2)"
+  wifiawk="$(echo $wifiessid | awk -F',' '{gsub(/"/, "", $1); print $1}')"
+  wificut="$(echo $wifiawk | cut -d' ' -f1)"
+  echo -ne "${color6}SSID${color0}  ${wificut}"
 }
 
-mem() {
-	local mem_info
-	mem_info=$(top -n | grep Mem | awk "${mem_fix}")
-	printf "%s" "${mem_info}"
+print_hddfree() {
+  hddfree="$(df -Ph /dev/nvme0n1p4 | awk '$3 ~ /[0-9]+/ {print $4}')"
+  echo -ne "${color6}  HDD  ${color0}${hddfree}"
 }
 
-temp() {
-	local TMP
-	# Average all the sensors
-	TMP=$(sysctl hw.sensors | grep cpu | \
-		awk -F= '{print $2}' | \
-		awk "${temp_avg}")
-	if [ $TMP -ge 85 ]; then
-		printf "\\${red}%2d\\${black}°C" "${TMP}"
-	else
-		printf "%2d°C" "${TMP}"
-	fi
-}
-battery() {
-	local BATT BAR BATT_LINE
-	if sysctl -n hw.product | grep -iq pine64; then
-		pct=$(sysctl -n hw.sensors.cwfg0.percent0)
-		pct=${pct%%.*}
-		set -A batt_info $pct 0 0
-	else
-		set -A batt_info $(apm -alm)
-	fi
+ print_volume(){
+    mix=`amixer get Master | tail -1`
+    vol="$(amixer get Master | tail -n1 | sed -r 's/.*\[(.*)%\].*/\1/')"
+    if [[ $mix == *\[off\]* ]]; then
+      #red 2                                                
+      echo -e "${color6}í${color2} OFF"
+    elif [[ $mix == *\[on\]* ]]; then
+      #green 9
+      echo -e "${color6}  SND  ${color0}${vol}% "
+    else
+      #yellow6
+      echo -e "${color6}  SND  ${color2} ---"
+    fi
+ }
 
-	BATT=$((${batt_info[0]}/10))
-	BAR="#"
-	if [ "${batt_info[2]}" == "1" ] ; then
-		BAR="+"
-	fi
 
-	BATT_LINE=""
-	for i in $(jot 10); do
-		if [ "$i" -le "$BATT" ]; then
-			BATT_LINE="${BATT_LINE}${BAR}"
-		else
-			BATT_LINE="${BATT_LINE}-"
-		fi
-	done
-
-	if [ $BATT -lt 3 ] && [ "${batt_info[2]}" == "0" ]; then
-		BATT_LINE="${red}${BATT_LINE}${black}"
-	fi
-
-	if [ $BATT -lt 5 ] && [ "${batt_info[2]}" == "0" ]; then
-		BATT_LINE="${yellow}${BATT_LINE}${black}"
-	fi
-	echo "${batt_info[0]}%"
+print_datetime() {
+  datetime="$(date "+%a %d %b %I:%M")"
+  echo -ne "${color1} |   ${datetime}"
 }
 
-vmm() {
-	if pgrep -q vmd; then
-		set -A running_vms $(vmctl status | grep running | awk '{print $NF"("$5")"}')
-		echo -n "VMs: "
-		for vm in "${running_vms[@]}"; do
-			echo -n "${vm} "
-		done
-	else
-		echo -n ""
-	fi
+print_cputemp() {
+  cputemp="$(sensors | grep Tctl | awk '{print $2}')"
+    echo -ne "${color6}TEMP ${color0}${cputemp}  "
+
 }
 
-
-function Battery {
-	ADAPTER=$(/usr/sbin/apm -a)
-	BPERCENT=$(/usr/sbin/apm -l)
-	BMINUTES=$(/usr/sbin/apm -m)
-	CHARGING=$(sysctl -n hw.sensors.acpibat0.raw0 | awk '{print $1}')
-
-	if [ ${ADAPTER} = 0 ] ; then
-		print -n "Batt: "
-	elif [ ${ADAPTER} = 1 ] ; then
-		print -n "AC: "
-	else
-		print -n "AC: "
-	fi
-	if [ ${BPERCENT} -gt 75 ] ; then
-		print -n "${GREEN}${BPERCENT}%${COLOROFF}"
-	elif [ ${BPERCENT} -gt 50 ] ; then
-		print -n "${YELLOW}${BPERCENT}%${COLOROFF}"
-	elif [ ${BPERCENT} -gt 25 ] ; then
-		print -n "${ORANGE}${BPERCENT}%${COLOROFF}"
-	else
-		if [ $CHARGING = 2 ]; then
-			print -n "${BPERCENT}%"
-		else
-			print -n "${RED}${REVERSE}${BPERCENT}${BATTERY}%${COLOROFF}"
-		fi
-	fi
-	[[ "${BMINUTES}" != "unknown" ]] && print -n \
-		" ($((${BMINUTES} / 60))h$((${BMINUTES} % 60))m)${COLOROFF}"
-	[[ ${CHARGING} = 2 ]] && print -n " ${COLOROFF}charging"
+print_mem() {
+  mem="$(free -h | grep Mem | awk '{print $2}')"
+  echo -ne "MEM ${mem}  "
 }
 
-function Clock {
-	# local DATETIME=$(date "+%a %F %H:%M %Z")
-  local DATETIME=$(date +'%a %d %b %H:%M')
-	print -n "${COLOROFF}${DATETIME}"
+# cpu (from: https://bbs.archlinux.org/viewtopic.php?pid=661641#p661641)
+
+while true; do
+  # get new cpu idle and total usage
+  eval $(awk '/^cpu /{print "cpu_idle_now=" $5 "; cpu_total_now=" $2+$3+$4+$5 }' /proc/stat)
+  cpu_interval=$((cpu_total_now-${cpu_total_old:-0}))
+  # calculate cpu usage (%)
+  let cpu_used="100 * ($cpu_interval - ($cpu_idle_now-${cpu_idle_old:-0})) / $cpu_interval"
+
+  # output vars
+print_cpu_used() {
+  printf "%-1b" "${color6}CPU${color0} ${cpu_used}% "
+#"%-10b" "${color7}CPU:${cpu_used}%"
 }
+ 
+  # Pipe to status bar, not indented due to printing extra spaces/tabs
+  #xsetroot -name "$(print_power)${sp1}$(print_wifiqual)$(print_hddfree)${sp1}$(print_email_count)$(print_pacup)$(print_aurups)$(print_aurphans)${sp2}$(print_volume)${sp2}$(print_datetime)"
+  echo "$(print_cpu_used) |  $(print_cputemp)  |  $(print_mem)  |  $(print_hddfree)  | $(print_volume)  | $(print_power)  |  $(print_wifiqual)  $(print_datetime)" | dwm-status
+  #xsetroot -name "$(print_song_info)$(print_power)${sp1}$(print_wifiqual)$(print_hddfree)${sp2}$(print_volume)${sp2}$(print_datetime)"
 
-
-function Display {
-	local LIGHT=$(xbacklight | awk -F. '{print $1'})
-	print -n "Display: ${LIGHT}%"
-}
-
-
-function Volume {
-	local MUTE=$(sndioctl output.mute | awk -F '=' '{ print $2 }')
-	local SPK="$(sndioctl output.level | awk -F '=' '{ print $2 * 100 }')%"
-  print -n "Vol: "
-	if [ "${MUTE}" = "1" ] ; then
-		SPK="mute"
-	else
-		#print -pn "${GREEN}"
-		print -n ""
-	fi
-	print -n "${SPK}${COLOROFF}"
-}
-
-while true ; do
-  printf "  %s  |  %s  |  %s  |  CPU: %s  |  %s %s  |  WIFI: %s  |  %s\n" \
-  "$(Battery)" "$(Display)" "$(Volume)" "$(temp)" "$(mem)" \
-  "$(vmm)" "$(wifi)" "$(Clock)" | dwm-status
+  # reset old rates
+  cpu_idle_old=$cpu_idle_now
+  cpu_total_old=$cpu_total_now
+  # loop stats every 1 second
   sleep 5
-done
+ done
