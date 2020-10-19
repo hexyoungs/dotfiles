@@ -1,0 +1,25 @@
+https://www.archlinux.org/feeds/news/ "tech news"
+https://undeadly.org/cgi?action=rss "bsd"
+https://www.freebsd.org/news/rss.xml "bsd"
+https://feeds.fireside.fm/bsdnow/rss "bsd"
+http://feeds.feedburner.com/Bsdtalk "bsd"
+https://www.osnews.com/feed/ "bsd"
+http://rss.slashdot.org/Slashdot/slashdotMain "bsd"
+http://www.netbsd.org/changes/rss-netbsd.xml "bsd"
+http://www.netbsd.org/changes/rss-netbsd-internals.xml "bsd"
+http://www.netbsd.org/changes/rss-netbsd-pkgs.xml "bsd"
+
+http://www.solidot.org/index.rss "news"
+https://sspai.com/feed "tech news"
+
+https://rustcc.cn/rss "rust"
+https://www.psychologytoday.com/intl/blog/essentials/feed
+https://www.reddit.com/r/rust/.rss "rust"
+
+https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml "github"
+https://mshibanami.github.io/GitHubTrendingRSS/daily/c.xml "github"
+https://mshibanami.github.io/GitHubTrendingRSS/daily/c++.xml "github"
+
+
+http://maskray.me/blog/atom.xml "blog"
+https://stjepang.github.io/feed.xml "blog"
