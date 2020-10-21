@@ -16,3 +16,6 @@ XF86MonBrightnessUp
 
 XF86MonBrightnessDown
   light -U 10
+
+control + alt + a
+  flameshot gui
