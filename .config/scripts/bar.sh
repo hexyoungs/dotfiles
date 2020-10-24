@@ -87,7 +87,7 @@ print_cputemp() {
 }
 
 print_mem() {
-  mem="$(free -h | grep Mem | awk '{print $2}')"
+  mem="$(free -h | grep Mem | awk '{print $4}')"
   echo -ne "MEM ${mem}  "
 }
 
