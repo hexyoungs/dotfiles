@@ -25,5 +25,5 @@
   "python.pythonPath": "/home/hexyoungs/miniconda3/bin/python",
   "tslint.autoFixOnSave": true,
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": true,
-  "rust-analyzer.serverPath": "/usr/bin/rust-analyzer"
+  "rust-analyzer.serverPath": "/usr/local/bin/rust-analyzer"
 }
