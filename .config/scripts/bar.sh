@@ -37,9 +37,9 @@ print_power() {
   # timer="$(acpi -b | grep "Battery" | awk '{print $5}' | cut -c 1-5)"
   timer="$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep hours | awk '{print $4}')"
   if [ "${status}" == 1 ]; then
-    echo -ne "${color6}  PWR  ${color0}ON ${battery}%    "
+    printf "AC ${battery}%%"
   else
-    echo -ne "${color6}  PWR  ${color0}${battery}%(${timer})   "
+    printf "BAT ${battery}%%(${timer})"
   fi
 }
 
@@ -47,7 +47,7 @@ print_wifiqual() {
   wifiessid="$(/sbin/iwconfig 2>/dev/null | grep ESSID | cut -d: -f2)"
   wifiawk="$(echo $wifiessid | awk -F',' '{gsub(/"/, "", $1); print $1}')"
   wificut="$(echo $wifiawk | cut -d' ' -f1)"
-  echo -ne "${color6}SSID${color0}  ${wificut}"
+  printf "SSID ${wificut}"
 }
 
 print_hddfree() {
@@ -60,24 +60,24 @@ print_hddfree() {
     vol="$(pamixer --get-volume)"
     if [[ $muted == true ]]; then
       #red 2                                                
-      echo -e "${color6}í${color2} OFF"
+      printf "SND OFF"
     elif [[ $muted == false ]]; then
       #green 9
-      echo -e "${color6}  SND  ${color0}${vol} "
+      printf "SND ${vol}"
     else
       #yellow6
-      echo -e "${color6}  SND  ${color2} ${muted}"
+      printf "SND ${muted}"
     fi
  }
 
 print_light() {
   light="$(light -G)"
-  echo -e " LIGHT ${light} "
+  printf "LIGHT ${light}"
 }
 
 print_datetime() {
   datetime="$(date "+%a %d %b %I:%M")"
-  echo -ne "${color1} |   ${datetime}"
+  printf "${datetime}"
 }
 
 print_cputemp() {
@@ -88,7 +88,7 @@ print_cputemp() {
 
 print_mem() {
   mem="$(free -h | grep Mem | awk '{print $4}')"
-  echo -ne "MEM ${mem}  "
+  printf "MEM ${mem}"
 }
 
 # cpu (from: https://bbs.archlinux.org/viewtopic.php?pid=661641#p661641)
@@ -102,13 +102,12 @@ while true; do
 
   # output vars
 print_cpu_used() {
-  printf "%-1b" "${color6}CPU${color0} ${cpu_used}% "
-#"%-10b" "${color7}CPU:${cpu_used}%"
+  printf "CPU ${cpu_used}%%"
 }
  
   # Pipe to status bar, not indented due to printing extra spaces/tabs
   #xsetroot -name "$(print_power)${sp1}$(print_wifiqual)$(print_hddfree)${sp1}$(print_email_count)$(print_pacup)$(print_aurups)$(print_aurphans)${sp2}$(print_volume)${sp2}$(print_datetime)"
-  echo "$(print_cpu_used) |  $(print_cputemp)  |  $(print_mem)  |  $(print_hddfree)  |  $(print_light)  |  $(print_volume)  | $(print_power)  |  $(print_wifiqual)  $(print_datetime)" | dwm-status
+  echo "$(print_cpu_used)   $(print_mem)   $(print_light)   $(print_volume)   $(print_power)   $(print_wifiqual)   $(print_datetime)   " | dwm-status
   #xsetroot -name "$(print_song_info)$(print_power)${sp1}$(print_wifiqual)$(print_hddfree)${sp2}$(print_volume)${sp2}$(print_datetime)"
 
   # reset old rates
