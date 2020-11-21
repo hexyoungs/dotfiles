@@ -245,6 +245,7 @@ nmap <silent> <C-g> :close<cr>
 " =======================================================
 
 let g:lightline = {
+      \ 'colorscheme': 'seoul256',
       \ 'component_function': {
       \   'filename': 'LightlineFilename',
       \ }
