@@ -1,1 +1,2 @@
 *.o
+compile_commands.json
