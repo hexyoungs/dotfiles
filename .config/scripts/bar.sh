@@ -39,7 +39,7 @@ print_power() {
   if [ "${status}" == 1 ]; then
     printf "AC ${battery}%%"
   else
-    printf "BAT ${battery}%%(${timer})"
+    printf "BAT ${battery}%%(${timer}h)"
   fi
 }
 
