@@ -20,9 +20,12 @@ xfce-polkit &
 pkill sxhkd
 sxhkd &
 
+pkill blueman-applet
+blueman-applet &
+
 /usr/bin/start-pulseaudio-x11
 
-/home/hexyoungs/.config/scripts/pegas_autostart > /dev/null 2<&1 &
+(cd /home/hexyoungs/.config/scripts && pegas_autostart > /dev/null 2<&1 &)
 /home/hexyoungs/.config/scripts/bg_autostart &
 
 kill $(pgrep -f bar)
