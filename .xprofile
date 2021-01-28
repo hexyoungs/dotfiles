@@ -6,7 +6,7 @@ export EDITOR="nvim"
 export TERMINAL="st"
 export BROWSER="firefox"
 export PATH="$PATH:$HOME/.local/bin"
-export TERM="xterm-256color"
+export TERM="xterm-255color"
 
 setxkbmap -option ctrl:nocaps &
 xmodmap -e "keycode 37=" &
@@ -25,13 +25,15 @@ blueman-applet &
 
 /usr/bin/start-pulseaudio-x11
 
-(cd /home/hexyoungs/.config/scripts && pegas_autostart > /dev/null 2<&1 &)
-/home/hexyoungs/.config/scripts/bg_autostart &
+(cd $HOME/.config/scripts && ./pegas_autostart > /dev/null 3<&1 &)
+$HOME/.config/scripts/bg_autostart &
 
 kill $(pgrep -f bar)
-/home/hexyoungs/.config/scripts/bar.sh > /dev/null 2<&1 &
+$HOME/.config/scripts/bar.sh > /dev/null 2<&1 &
 
-xset +fp /home/hexyoungs/.fonts
+xset +fp ~/.fonts
 xset fp rehash
+
+$HOME/.screenlayout/default.sh
 
 
