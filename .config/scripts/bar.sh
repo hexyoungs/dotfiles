@@ -44,6 +44,7 @@ print_power() {
 }
 
 print_wifiqual() {
+  # pacman -S wireless_tools
   wifiessid="$(/sbin/iwconfig 2>/dev/null | grep ESSID | cut -d: -f2)"
   wifiawk="$(echo $wifiessid | awk -F',' '{gsub(/"/, "", $1); print $1}')"
   wificut="$(echo $wifiawk | cut -d' ' -f1)"
