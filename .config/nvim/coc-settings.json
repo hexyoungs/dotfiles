@@ -12,12 +12,6 @@
     "javascriptreact",
     "python"
   ],
-  "eslint.filetypes": [
-    "javascript",
-    "typescript",
-    "typescriptreact",
-    "javascriptreact"
-  ],
   "diagnostic.errorSign": "•",
   "diagnostic.warningSign": "•",
   "diagnostic.infoSign": "•",
