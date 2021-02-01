@@ -8,6 +8,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'mattn/emmet-vim'
 Plug 'joshdick/onedark.vim'
+Plug 'rakr/vim-one'
 Plug 'junegunn/goyo.vim'
 Plug 'justinmk/vim-sneak'
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -59,7 +60,9 @@ nnoremap <silent> <C-w>8 8gt
 nnoremap <silent> <C-w>9 9gt
 " fzf.vim
 nnoremap <silent> <C-p> :GFiles<cr>
-colorscheme onedark
+" colorscheme onedark
+colorscheme one
+set background=light
 " Ctrl+c and Ctrl+j as Esc
 inoremap <C-j> <Esc>
 vnoremap <C-j> <Esc>
@@ -243,9 +246,10 @@ nmap <silent> <C-g> :close<cr>
 " =======================================================
 "                   UI
 " =======================================================
-
+" 'seoul256'
+" Tomorrow
 let g:lightline = {
-      \ 'colorscheme': 'seoul256',
+      \ 'colorscheme': 'Tomorrow',
       \ 'component_function': {
       \   'filename': 'LightlineFilename',
       \ }

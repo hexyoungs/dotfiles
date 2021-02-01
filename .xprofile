@@ -20,6 +20,9 @@ xfce-polkit &
 pkill sxhkd
 sxhkd &
 
+pkill flameshot
+flameshot &
+
 pkill blueman-applet
 blueman-applet &
 
