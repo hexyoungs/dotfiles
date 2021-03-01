@@ -19,3 +19,10 @@ XF86MonBrightnessDown
 
 control + alt + a
   flameshot gui
+
+shift + alt + Return
+  alacritty
+
+shift + alt + f
+  alacritty -e 'ranger'
+
