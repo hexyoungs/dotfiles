@@ -21,8 +21,8 @@ control + alt + a
   flameshot gui
 
 shift + alt + Return
-  alacritty
+  st -f "Noto Sans Mono:size=16"
 
 shift + alt + f
-  alacritty -e 'ranger'
+  st -f "Noto Sans Mono:size=16" -e 'ranger'
 
