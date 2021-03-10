@@ -15,3 +15,5 @@ alias set-proxy='export http_proxy="socks5://127.0.0.1:1080";export https_proxy=
 alias update-grub='grub-mkconfig -o /boot/grub/grub.cfg'
 
 export GO111MODULE=on
+
+alias rust-musl-builder='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder'
