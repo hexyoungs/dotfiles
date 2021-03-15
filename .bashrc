@@ -17,3 +17,8 @@ alias update-grub='grub-mkconfig -o /boot/grub/grub.cfg'
 export GO111MODULE=on
 
 alias rust-musl-builder='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder'
+
+alias sync-time='sudo /usr/sbin/ntpdate pool.ntp.org' # need ntp package
+
+alias disable-hibernate='sudo systemctl mask hibernate.target hybrid-sleep.target'
+alias enable-hibernate='sudo systemctl unmask hibernate.target hybrid-sleep.target'
